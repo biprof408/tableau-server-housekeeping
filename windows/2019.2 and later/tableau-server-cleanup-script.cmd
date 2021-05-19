@@ -16,7 +16,6 @@
 :: Give me a shout on Twitter @macdonaldj for questions, comments or feedback
 
 @echo OFF
-cls
 
 :: Checks that the script is being run with Admin rights. 
 :check_admin

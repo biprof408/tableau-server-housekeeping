@@ -11,7 +11,6 @@
 :: Give me a shout on Twitter @macdonaldj for questions, comments or feedback
 
 @echo OFF
-cls
 
 :: Checks that the script is being run with Admin rights. 
 :check_admin
@@ -95,9 +94,10 @@ IF %overwrite_requested% == true GOTO overwrite
 
 :: It was used so let's delete the current file if it's there
 :overwrite
-ECHO %date% %time% : Overwrite was requested. Cleaning out any existing file with the same name
+FOR /F "tokens=* USEBACKQ" %%F IN (`tsm configuration get -k basefilepath.backuprestore`) DO (SET "backuppath=%%F")
+ECHO %date% %time% : Overwrite was requested. Cleaning out any existing file with the same name "%backuppath%\%filename%-%mydate%.tsbak"
 IF EXIST "%backuppath%\%filename%-%mydate%.tsbak" DEL /F "%backuppath%\%filename%-%mydate%.tsbak" >nul 2>&1
-GOTO set_backup_dir
+GOTO backup_dir_already_set
 
 :: It wasn't used so let's just go ahead and backup
 :no_overwrite
@@ -112,6 +112,8 @@ ECHO %date% %time% : Overwrite was not requested, proceeding
 :set_backup_dir
 ECHO %date% %time% : Getting the location of the default backup directory
 FOR /F "tokens=* USEBACKQ" %%F IN (`tsm configuration get -k basefilepath.backuprestore`) DO (SET "backuppath=%%F")
+
+:backup_dir_already_set
 ECHO The default backup path is: 
 ECHO %backuppath%
 
